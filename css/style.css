@@ -28,9 +28,9 @@ html, body {
 #companion {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  left: 330px;
   width: 20px;
-  height: 298px;
+  height: 236px;
   overflow: visible;
   z-index: 10;
 }
