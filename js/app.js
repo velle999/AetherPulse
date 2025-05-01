@@ -1,38 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("🌌 AetherPulse initialized.");
 
-  // Enable audio playback after the first user interaction (required by many browsers)
+  // Wait for a user click to unlock audio (thanks, browser nanny policies)
   document.addEventListener("click", () => {
-    if (typeof initializeAudio === "function") {
-      initializeAudio();
-    } else {
-      console.warn("⚠️ initializeAudio() is not defined.");
-    }
+    safeInit("initializeAudio");
   }, { once: true });
 
-  // Initialize core systems with safety checks
-  if (typeof initializeWeather === "function") {
-    initializeWeather(); // weather.js
-  } else {
-    console.warn("⚠️ initializeWeather() is not defined.");
-  }
-
-  if (typeof initializeStocks === "function") {
-    initializeStocks(); // stock.js
-  } else {
-    console.warn("⚠️ initializeStocks() is not defined.");
-  }
-
-  if (typeof generateMood === "function") {
-    generateMood(); // moodEngine.js
-  } else {
-    console.warn("⚠️ generateMood() is not defined.");
-  }
-
-  if (typeof initializeCanvas === "function") {
-    initializeCanvas(); // canvasEngine.js
-  } else {
-    console.warn("⚠️ initializeCanvas() is not defined.");
-  }
+  // Initialize all systems safely
+  safeInit("initializeWeather");   // weather.js
+  safeInit("initializeStocks");    // stock.js
+  safeInit("generateMood");        // moodengine.js
+  safeInit("initializeCanvas");    // canvasengine.js
 });
+
+/**
+ * Tries to run a function by name if it's defined in the global scope.
+ * Otherwise logs a warning to the console so you know what exploded.
+ */
+function safeInit(fnName) {
+  const fn = window[fnName];
+  if (typeof fn === "function") {
+    try {
+      fn();
+    } catch (err) {
+      console.error(`❌ Error running ${fnName}():`, err);
+    }
+  } else {
+    console.warn(`⚠️ ${fnName}() is not defined.`);
+  }
+}
 
