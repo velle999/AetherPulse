@@ -30,7 +30,7 @@ html, body {
   bottom: 20px;
   left: 20px;
   width: 20px;
-  height: 298px; /* <-- make sure it can fit full fox + accessories */
+  height: 298px;
   overflow: visible;
   z-index: 10;
 }
@@ -47,7 +47,6 @@ html, body {
 }
 
 /* Base fox style */
-
 #fox {
   width: 100px;
   position: absolute;
@@ -126,5 +125,20 @@ html, body {
 
 .fox-walk {
   animation: walk 20s linear infinite alternate;
+}
+
+/* 🌡️ Temperature toggle button */
+#temp-unit {
+  all: unset; /* Reset any button-like styles */
+  cursor: pointer;
+  margin-left: 6px;
+  color: inherit;
+  font-weight: bold;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+#temp-unit:hover {
+  color: #66fff6;
 }
 

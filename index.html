@@ -5,25 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AetherPulse</title>
 
-  <!-- Preload and apply styles -->
+<!-- 🔵 Standard Favicon -->
+<link rel="icon" type="image/png" href="assets/fox.png" sizes="32x32" />
+
+<!-- 🍎 Apple Touch Icon -->
+<link rel="apple-touch-icon" href="assets/fox.png" sizes="180x180" />
+
+<!-- 📱 Android/Chrome Home Screen -->
+<link rel="icon" type="image/png" sizes="192x192" href="assets/fox.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="assets/fox.png" />
+
+<!-- 🟢 Web App Manifest (optional if you're making it PWA-like) -->
+<!-- <link rel="manifest" href="manifest.json"> -->
+
+  <!-- 🧵 Preload stylesheet to reduce flash of unstyled content -->
   <link rel="preload" href="css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/style.css" /></noscript>
 
-  <!-- Prevent flash of unstyled content -->
+  <!-- ⚡ Prevent flash of unstyled content -->
   <style> body { visibility: hidden; } </style>
 </head>
 
 <body>
   <div id="aether-container">
+    <!-- 🌌 Ambient Canvas -->
     <canvas id="ambient-canvas"></canvas>
 
-    <!-- 🦊 Fox Companion -->
+    <!-- 🦊 Animated Companion -->
     <div id="companion" style="position: relative;">
       <div id="fox-particles"></div>
       <img id="fox" src="assets/fox.png" alt="Fox companion" />
     </div>
 
-    <!-- 🌌 Mood Overlay -->
+    <!-- 🌠 Mood Display -->
     <div id="mood-overlay">
       <h1 id="mood-title">AetherPulse</h1>
       <p id="mood-description">Loading atmospheric vibe...</p>
@@ -36,18 +50,19 @@
 
     <!-- 🌡️ Temperature Display -->
     <div id="temp-container">
-<span id="temp-value">--</span><span id="temp-unit" style="cursor: pointer;">°C</span>
+      <span id="temp-value">--</span>
+      <button id="temp-unit" aria-label="Toggle temperature unit">°C</button>
     </div>
   </div>
 
-  <!-- Reveal after styles are applied -->
+  <!-- 🟢 Reveal body after page fully loads -->
   <script>
     window.addEventListener("load", () => {
       document.body.style.visibility = "visible";
     });
   </script>
 
-  <!-- 🔧 Core Scripts -->
+  <!-- ⚙️ Script Modules -->
   <script src="js/config.js"></script>
   <script src="js/weather.js"></script>
   <script src="js/stock.js"></script>

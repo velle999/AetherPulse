@@ -30,9 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
   safeInit("initializeStocks");
   safeInit("generateMood");
   safeInit("initializeCanvas");
-
-  // 🌡️ Bind temperature toggle
-  document.getElementById('temp-unit')?.addEventListener('click', toggleTemperatureUnit);
 });
 
 function safeInit(fnName) {
@@ -185,13 +182,6 @@ function updateFoxAppearance(condition) {
 }
 
 // 🌡️ Temperature Display & Toggle
-function displayTemperature(tempC) {
-  window.currentTempC = tempC;
-  window.isCelsius = true;
-  document.getElementById('temp-value').textContent = Math.round(tempC);
-  document.getElementById('temp-unit').textContent = '°C';
-}
-
 function toggleTemperatureUnit() {
   const tempValueEl = document.getElementById('temp-value');
   const tempUnitEl = document.getElementById('temp-unit');

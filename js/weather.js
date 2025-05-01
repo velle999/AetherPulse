@@ -2,45 +2,46 @@
 
 const weatherStatusEl = document.getElementById('weather-status');
 let lastWeatherMood = null;
-let currentTempC = null;
-let isCelsius = true;
 
-// 🌡️ Show temperature and bind toggle once
+// Ensure global state is initialized
+if (typeof window.currentTempC === 'undefined') window.currentTempC = null;
+if (typeof window.isCelsius === 'undefined') window.isCelsius = true;
+
+// 🌡️ Display temperature and bind toggle once
 function displayTemperature(tempC) {
-  currentTempC = tempC;
-  isCelsius = true;
-
+  window.currentTempC = tempC;
   const valueEl = document.getElementById('temp-value');
-  const unitEl = document.getElementById('temp-unit');
+  const unitBtn = document.getElementById('temp-unit');
+  if (!valueEl || !unitBtn) return;
 
-  if (!valueEl || !unitEl) return;
-
+  // Always display Celsius first
+  window.isCelsius = true;
   valueEl.textContent = Math.round(tempC);
-  unitEl.textContent = '°C';
+  unitBtn.textContent = '°C';
 
-  // Bind toggle click only once
-  if (!unitEl.dataset.bound) {
-    unitEl.addEventListener('click', toggleTemperatureUnit);
-    unitEl.dataset.bound = "true";
+  // Attach click toggle if not already
+  if (!unitBtn.dataset.bound) {
+    unitBtn.addEventListener('click', toggleTemperatureUnit);
+    unitBtn.dataset.bound = 'true';
   }
 }
 
-// 🌡️ Toggle between Celsius and Fahrenheit
+// 🌡️ Celsius ↔ Fahrenheit toggle
 function toggleTemperatureUnit() {
   const valueEl = document.getElementById('temp-value');
-  const unitEl = document.getElementById('temp-unit');
-  if (!valueEl || !unitEl || currentTempC === null) return;
+  const unitBtn = document.getElementById('temp-unit');
+  if (!valueEl || !unitBtn || window.currentTempC === null) return;
 
-  if (isCelsius) {
-    const f = (currentTempC * 9) / 5 + 32;
+  if (window.isCelsius) {
+    const f = (window.currentTempC * 9) / 5 + 32;
     valueEl.textContent = Math.round(f);
-    unitEl.textContent = '°F';
-    isCelsius = false;
+    unitBtn.textContent = '°F';
   } else {
-    valueEl.textContent = Math.round(currentTempC);
-    unitEl.textContent = '°C';
-    isCelsius = true;
+    valueEl.textContent = Math.round(window.currentTempC);
+    unitBtn.textContent = '°C';
   }
+
+  window.isCelsius = !window.isCelsius;
 }
 
 // ☁️ Weather fetcher
@@ -48,8 +49,8 @@ async function fetchWeatherData() {
   try {
     const apiKey = typeof weatherApiKey !== 'undefined' ? weatherApiKey : CONFIG.WEATHER_API_KEY;
     const city = typeof weatherCity !== 'undefined' ? weatherCity : CONFIG.DEFAULT_CITY || 'New York';
-
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
     const response = await fetch(url);
     if (!response.ok) throw new Error('Weather fetch error');
 
@@ -59,24 +60,23 @@ async function fetchWeatherData() {
     const tempC = data.main.temp;
     const feelsC = data.main.feels_like;
 
-    // ⛅ Weather icon
+    // 🌡️ Display temp and setup toggle
+    displayTemperature(tempC);
+
+    // ⛅ Icon
     let icon = '⛅';
     if (condition.includes('rain') || condition.includes('drizzle') || condition.includes('thunderstorm')) icon = '☔';
     else if (condition.includes('snow')) icon = '❄️';
     else if (condition.includes('clear')) icon = '😎';
     else if (condition.includes('cloud')) icon = '☁️';
-
     if (weatherStatusEl) weatherStatusEl.textContent = icon;
 
-    // 🎨 Update fox sprite
+    // 🦊 Update companion
     if (typeof updateFoxAppearance === 'function') {
       updateFoxAppearance(condition);
     }
 
-    // 🌡️ Show and bind temperature toggle
-    displayTemperature(tempC);
-
-    // 🧠 Mood logic
+    // 🧠 Mood determination
     let moodVal = 0;
     if (['rain', 'drizzle', 'thunderstorm', 'snow'].some(w => condition.includes(w))) moodVal = -1;
     else if (condition.includes('clear')) moodVal = 1;
@@ -87,7 +87,7 @@ async function fetchWeatherData() {
     setWeatherMood(moodVal, moodDescription);
 
   } catch (err) {
-    console.error('🌩️ Weather fetch failed, using last known mood.', err);
+    console.error('🌩️ Weather fetch failed. Using last known mood.', err);
     const fallbackMood = moodFromValue(lastWeatherMood ?? 0);
     window.dispatchEvent(new CustomEvent("moodUpdate", {
       detail: {
@@ -99,19 +99,20 @@ async function fetchWeatherData() {
   }
 }
 
-// 🔁 Schedule updates every 10 min
+// 🔁 Auto-fetch every 10 minutes
 function startWeatherUpdates() {
   fetchWeatherData();
   setInterval(fetchWeatherData, 10 * 60 * 1000);
 }
 
-// 🎭 Mood conversion
+// 🎭 Mood value to string
 function moodFromValue(val) {
   if (val >= 1) return 'serene';
   if (val <= -1) return 'gloomy';
   return 'neutral';
 }
 
+// 📡 Dispatch mood event
 function setWeatherMood(val, description) {
   window.dispatchEvent(new CustomEvent("moodUpdate", {
     detail: {
@@ -122,7 +123,7 @@ function setWeatherMood(val, description) {
   }));
 }
 
-// 🌍 Export to global namespace
+// 🌐 Export globally
 if (typeof weather === 'undefined') {
   var weather = {};
 }
