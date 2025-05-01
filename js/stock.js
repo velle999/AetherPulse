@@ -1,27 +1,32 @@
 async function initializeStocks() {
   try {
-    console.log('💹 Fetching stock data...');
-    const symbol = CONFIG.DEFAULT_STOCK;
+    console.log('💹 Checking stock cache...');
+    const cacheKey = `stockCache_${CONFIG.DEFAULT_STOCK}`;
+    const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+    const now = Date.now();
 
-    // Properly build and encode the target URL
+    if (cached && now - cached.timestamp < 5 * 60 * 1000) {
+      console.log('📦 Using cached stock data.');
+      updateStockMood(parseStockMood(cached.data));
+      return;
+    }
+
+    console.log('📡 Fetching fresh stock data...');
+    const symbol = CONFIG.DEFAULT_STOCK;
     const stockTarget = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${CONFIG.STOCK_API_KEY}`;
     const stockUrl = CONFIG.CORS_PROXY + encodeURIComponent(stockTarget);
 
     const response = await fetch(stockUrl);
     if (!response.ok) throw new Error(`Fetch failed: ${response.statusText}`);
-    
     const data = await response.json();
-    console.log('[Stock Data]', data);
 
-    const mood = parseStockMood(data);
-    updateStockMood(mood);
+    // Save to localStorage with timestamp
+    localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: now }));
+    updateStockMood(parseStockMood(data));
 
   } catch (err) {
     console.error('📉 Stock API error:', err);
-    updateStockMood({
-      mood: 'neutral',
-      description: `⚠️ Market data unavailable`
-    });
+    updateStockMood({ mood: 'neutral', description: '⚠️ Market data unavailable' });
   }
 }
 
@@ -78,12 +83,19 @@ function updateStockMood({ mood, description }) {
   const stockEl = document.getElementById('market-status');
   if (stockEl) {
     stockEl.textContent = description;
+    animateUpdate(stockEl);
   } else {
     console.warn('⚠️ Element #market-status not found.');
   }
 
-  // Dispatch mood update event
   window.dispatchEvent(new CustomEvent('moodUpdate', {
     detail: { type: 'stock', mood, description }
   }));
 }
+
+function animateUpdate(el) {
+  if (!el) return;
+  el.classList.add('pulse');
+  setTimeout(() => el.classList.remove('pulse'), 500);
+}
+
