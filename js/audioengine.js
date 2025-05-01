@@ -6,7 +6,6 @@ function initializeAudio() {
   if (audioInitialized) return;
   audioInitialized = true;
 
-  // Add all mood keys that could be triggered from the mood engine
   const moods = [
     'serene',
     'euphoric',
@@ -14,7 +13,7 @@ function initializeAudio() {
     'panic',
     'gloomy',
     'neutral',
-    'pensive',
+    'pensive'
   ];
 
   moods.forEach(mood => {
@@ -28,19 +27,20 @@ function initializeAudio() {
 }
 
 function playMoodAudio(mood) {
-  if (!moodAudio[mood]) {
+  const audio = moodAudio[mood];
+
+  if (!audio) {
     console.warn(`⚠️ No audio defined for mood: ${mood}`);
     return;
   }
 
-  if (currentAudio && currentAudio !== moodAudio[mood]) {
+  if (currentAudio && currentAudio !== audio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
   }
 
-  currentAudio = moodAudio[mood];
+  currentAudio = audio;
   currentAudio.play().catch(err => {
-    console.warn('🔇 Autoplay blocked — user interaction required.', err);
+    console.warn('🔇 Audio playback blocked (likely due to autoplay policy):', err);
   });
 }
-

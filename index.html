@@ -4,29 +4,56 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AetherPulse</title>
-  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Preload and apply styles -->
+  <link rel="preload" href="css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/style.css" /></noscript>
+
+  <!-- Prevent flash of unstyled content -->
+  <style> body { visibility: hidden; } </style>
 </head>
+
 <body>
   <div id="aether-container">
     <canvas id="ambient-canvas"></canvas>
-    <div id="companion"></div>
+
+    <!-- 🦊 Fox Companion -->
+    <div id="companion" style="position: relative;">
+      <div id="fox-particles"></div>
+      <img id="fox" src="assets/fox.png" alt="Fox companion" />
+    </div>
+
+    <!-- 🌌 Mood Overlay -->
     <div id="mood-overlay">
       <h1 id="mood-title">AetherPulse</h1>
       <p id="mood-description">Loading atmospheric vibe...</p>
       <div id="status">
-        <button id="test-audio">🔊 Play Pensive Test</button>
         <span id="weather-status">⛅</span>
         <span id="market-status">📈</span>
         <span id="event-status">🌍</span>
       </div>
     </div>
+
+    <!-- 🌡️ Temperature Display -->
+    <div id="temp-container">
+<span id="temp-value">--</span><span id="temp-unit" style="cursor: pointer;">°C</span>
+    </div>
   </div>
-<script src="js/config.js"></script>
-<script src="js/weather.js"></script>
-<script src="js/stock.js"></script>
-<script src="js/moodengine.js"></script>
-<script src="js/canvasengine.js"></script>
-<script src="js/audioengine.js"></script>
-<script src="js/app.js"></script>  
+
+  <!-- Reveal after styles are applied -->
+  <script>
+    window.addEventListener("load", () => {
+      document.body.style.visibility = "visible";
+    });
+  </script>
+
+  <!-- 🔧 Core Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/stock.js"></script>
+  <script src="js/moodengine.js"></script>
+  <script src="js/canvasengine.js"></script>
+  <script src="js/audioengine.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

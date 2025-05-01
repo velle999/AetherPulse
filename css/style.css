@@ -26,14 +26,13 @@ html, body {
 }
 
 #companion {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: 80px;
-  height: 80px;
-  background: url('../assets/images/fox.png') no-repeat center center;
-  background-size: contain;
-  z-index: 2;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 20px;
+  height: 298px; /* <-- make sure it can fit full fox + accessories */
+  overflow: visible;
+  z-index: 10;
 }
 
 #mood-overlay {
@@ -46,3 +45,86 @@ html, body {
   border-radius: 8px;
   box-shadow: 0 0 10px #00fff0;
 }
+
+/* Base fox style */
+
+#fox {
+  width: 100px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+#fox-accessory {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100px;
+  display: none;
+}
+
+/* Mood animations */
+.fox-happy {
+  animation: tail-wag 1s ease-in-out infinite;
+}
+
+.fox-panic {
+  animation: shake 0.3s ease-in-out infinite;
+}
+
+.fox-sleep {
+  opacity: 0.7;
+  transform: scale(0.95);
+}
+
+@keyframes tail-wag {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(8deg); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Container for particles */
+#fox-particles {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  pointer-events: none;
+  z-index: 9;
+}
+
+/* Particle burst style */
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: gold;
+  opacity: 0.8;
+  animation: burst 1s ease-out forwards;
+}
+
+@keyframes burst {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.5) translate(var(--x), var(--y));
+    opacity: 0;
+  }
+}
+
+@keyframes walk {
+  0% { left: 0; }
+  100% { left: calc(100vw - 100px); }
+}
+
+.fox-walk {
+  animation: walk 20s linear infinite alternate;
+}
+

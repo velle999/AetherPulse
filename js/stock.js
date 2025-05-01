@@ -5,6 +5,7 @@ async function initializeStocks() {
     const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
     const now = Date.now();
 
+    // Use cached data if under 5 minutes old
     if (cached && now - cached.timestamp < 5 * 60 * 1000) {
       console.log('📦 Using cached stock data.');
       updateStockMood(parseStockMood(cached.data));
@@ -20,13 +21,20 @@ async function initializeStocks() {
     if (!response.ok) throw new Error(`Fetch failed: ${response.statusText}`);
     const data = await response.json();
 
-    // Save to localStorage with timestamp
+    // Validate Alpha Vantage limits/errors
+    if (data['Note'] || data['Error Message'] || data['Information']) {
+      throw new Error(data['Note'] || data['Error Message'] || data['Information']);
+    }
+
+    // Save clean response to cache
     localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: now }));
     updateStockMood(parseStockMood(data));
-
   } catch (err) {
-    console.error('📉 Stock API error:', err);
-    updateStockMood({ mood: 'neutral', description: '⚠️ Market data unavailable' });
+    console.error('📉 Stock API error:', err.message || err);
+    updateStockMood({
+      mood: 'neutral',
+      description: '⚠️ Market data unavailable'
+    });
   }
 }
 
@@ -88,6 +96,7 @@ function updateStockMood({ mood, description }) {
     console.warn('⚠️ Element #market-status not found.');
   }
 
+  // Dispatch mood update event
   window.dispatchEvent(new CustomEvent('moodUpdate', {
     detail: { type: 'stock', mood, description }
   }));
@@ -98,4 +107,3 @@ function animateUpdate(el) {
   el.classList.add('pulse');
   setTimeout(() => el.classList.remove('pulse'), 500);
 }
-
