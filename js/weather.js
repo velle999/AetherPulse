@@ -1,21 +1,21 @@
 async function initializeWeather() {
-    try {
-      console.log('☁️ Fetching weather data...');
-      const weatherUrl = `${CONFIG.CORS_PROXY}https://api.openweathermap.org/data/2.5/weather?zip=${CONFIG.DEFAULT_LOCATION},US&appid=${CONFIG.WEATHER_API_KEY}&units=imperial`;
-  
-      const response = await fetch(weatherUrl);
-      if (!response.ok) throw new Error(`Fetch failed: ${response.statusText}`);
-  
-      const data = await response.json();
-      console.log('[Weather Data]', data);
-  
-      const parsed = parseWeather(data);
-      updateWeatherMood(parsed);
-    } catch (error) {
-      console.error('❌ Weather fetch error:', error);
-      updateWeatherMood({ mood: 'confused', description: 'Unable to retrieve weather data 🤷‍♂️' });
-    }
+  try {
+    console.log('☁️ Fetching weather data...');
+    // Build the target URL in one string:
+    const weatherTarget = `https://api.openweathermap.org/data/2.5/weather?zip=${CONFIG.DEFAULT_LOCATION},US&appid=${CONFIG.WEATHER_API_KEY}&units=imperial`;
+    // URL-encode the target when using the CORS proxy:
+    const weatherUrl = CONFIG.CORS_PROXY + encodeURIComponent(weatherTarget);
+    const response = await fetch(weatherUrl);
+    if (!response.ok) throw new Error(`Fetch failed: ${response.statusText}`);
+    const data = await response.json();
+    console.log('[Weather Data]', data);
+    const parsed = parseWeather(data);
+    updateWeatherMood(parsed);
+  } catch (error) {
+    console.error('❌ Weather fetch error:', error);
+    updateWeatherMood({ mood: 'confused', description: 'Unable to retrieve weather data 🤷‍♂️' });
   }
+}
   
   function parseWeather(data) {
     if (!data || !data.main || !data.weather || !Array.isArray(data.weather)) {

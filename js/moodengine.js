@@ -21,8 +21,8 @@ function generateMood() {
 }
 
 function updateOverallMood() {
-  const moodEl = document.getElementById('mood-title');
-  const descEl = document.getElementById('mood-description'); // 🔥 fixed this
+const moodEl = document.getElementById('mood-title');
+const descEl = document.getElementById('mood-description'); // 🔥 fixed this
 
   const activeMoods = Object.values(currentMood).filter(Boolean);
   if (activeMoods.length === 0) return;

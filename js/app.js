@@ -29,4 +29,12 @@ function safeInit(fnName) {
     console.warn(`⚠️ ${fnName}() is not defined.`);
   }
 }
+function initializeCanvas() {
+  console.log("🔲 Canvas initialized (stub)");
+  // TODO: Add actual canvas setup code here.
+}
 
+function initializeAudio() {
+  console.log("🔊 Audio initialized (stub)");
+  // TODO: Add actual audio setup code here.
+}
