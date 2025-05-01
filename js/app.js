@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   safeInit("initializeStocks");
+  safeInit("fetchNewsMood");
   safeInit("generateMood");
   safeInit("initializeCanvas");
 });
