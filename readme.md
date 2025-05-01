@@ -9,7 +9,7 @@
 - 🦊 AI companion reacts to global mood
 
 ## 🚀 Live Demo
-Coming soon at: [https://velle999.github.io/AetherPulse](https://yourusername.github.io/AetherPulse)
+Coming soon at: [https://velle999.github.io/AetherPulse/]
 
 ## 🛠️ Stack
 - HTML5 + CSS3 + JavaScript
