@@ -38,6 +38,15 @@ function initializeCanvas() {
 function initializeAudio() {
   console.log("🔊 Audio system initializing...");
 
+document.getElementById('test-audio')?.addEventListener('click', () => {
+  console.log('🧪 Test button clicked: triggering pensive mood audio...');
+  if (typeof playMoodAudio === 'function') {
+    playMoodAudio('pensive');
+  } else {
+    console.warn('⚠️ playMoodAudio is not defined.');
+  }
+});
+
   // Global mood-to-audio logic for ambient playback
   window.playMoodAudio = function (mood) {
     const moodSounds = {
