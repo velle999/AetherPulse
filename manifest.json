@@ -1,0 +1,22 @@
+{
+  "name": "AetherPulse",
+  "short_name": "AetherPulse",
+  "description": "Ambient weather + mood engine with animated fox companion.",
+  "start_url": "/AetherPulse/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00fff0",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/fox.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/fox.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
