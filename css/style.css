@@ -12,7 +12,8 @@ html, body {
   position: relative;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 #ambient-canvas {
@@ -142,3 +143,103 @@ html, body {
   color: #66fff6;
 }
 
+/* 📡 Zone Monitor Panel */
+
+.zone-item {
+  margin-bottom: 12px;
+  padding: 8px;
+  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid #00fff0;
+  border-radius: 8px;
+}
+
+.zone-item.high {
+  border-color: red;
+  color: #ffaaaa;
+}
+
+.zone-item.medium {
+  border-color: orange;
+  color: #ffd699;
+}
+
+.zone-item.elevated {
+  border-color: yellow;
+  color: #ffffcc;
+}
+
+.zone-item button {
+  background: none;
+  border: 1px solid #00fff0;
+  color: #00fff0;
+  font-size: 10px;
+  margin-top: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.zone-item button:hover {
+  background: #00fff066;
+}
+/* 🔻 Blended Conflict Panel Style */
+#zone-monitor {
+  margin-top: 40px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 2px solid #00fff0;
+  box-shadow: inset 0 0 10px #00fff088;
+  border-radius: 12px;
+  color: #00fff0;
+  font-family: 'Courier New', monospace;
+}
+
+#zone-monitor h2 {
+  font-size: 1rem;
+  margin-top: 0;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #00fff0;
+  padding-bottom: 4px;
+}
+
+#zone-list .zone-item {
+  background: rgba(0, 255, 255, 0.05);
+  border-left: 3px solid #00fff0;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+}
+
+#zone-list .zone-item.high {
+  border-left-color: red;
+  color: #ffaaaa;
+}
+
+#zone-list .zone-item.medium {
+  border-left-color: orange;
+  color: #ffd699;
+}
+
+#zone-list .zone-item.elevated {
+  border-left-color: yellow;
+  color: #ffffcc;
+}
+
+#zone-list .zone-item button {
+  font-size: 0.75rem;
+  margin-top: 5px;
+  margin-right: 5px;
+  background: none;
+  border: 1px solid #00fff0;
+  border-radius: 4px;
+  color: #00fff0;
+  padding: 4px 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#zone-list .zone-item button:hover {
+  background: #00fff044;
+}
