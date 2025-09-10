@@ -1130,31 +1130,31 @@ function enhancedMilitaryUpdate() {
   updateMilitaryTrackersWithTrails();
 }
 
-// 🌍 Define conflict zones (Eastern Europe + Russia war)
+// 🌍 Define conflict zones (Eastern Europe + Russia warzone)
 const conflictZones = [
   {
     name: "Donbas Region",
-    description: "Ongoing conflict zone with active military operations.",
-    risk: "High",
+    description: "Intense frontline battles with daily clashes and high civilian toll.",
+    risk: "Severe",
     latitude: 48.5,
     longitude: 38.0,
-    troops: "Heavy troop presence"
+    troops: "Heavy troop presence, 150+ engagements reported daily, artillery + glide bombs"
   },
   {
     name: "Crimea",
-    description: "Occupied region with military buildup.",
-    risk: "Medium",
+    description: "Heavily militarized peninsula, strategic for Russia’s missile and naval operations.",
+    risk: "High",
     latitude: 45.3,
     longitude: 34.0,
-    troops: "Naval + ground forces"
+    troops: "Naval + ground forces, air-defense degraded (Podlet & Nebo-M radars destroyed)"
   },
   {
     name: "Belgorod Border",
-    description: "Russian staging area near Ukraine border.",
+    description: "Russian staging ground under regular Ukrainian drone strikes.",
     risk: "Elevated",
     latitude: 50.6,
     longitude: 36.6,
-    troops: "Cross-border attacks reported"
+    troops: "Cross-border attacks ongoing, Russia claims 150+ drones intercepted in a day"
   }
 ];
 
@@ -1375,4 +1375,4 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     focusOnWarZones();
   }, 3000);
-});
+}); 
