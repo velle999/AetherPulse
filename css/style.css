@@ -144,7 +144,6 @@ html, body {
 }
 
 /* 📡 Zone Monitor Panel */
-
 .zone-item {
   margin-bottom: 12px;
   padding: 8px;
@@ -184,6 +183,7 @@ html, body {
 .zone-item button:hover {
   background: #00fff066;
 }
+
 /* 🔻 Blended Conflict Panel Style */
 #zone-monitor {
   margin-top: 40px;
@@ -242,4 +242,116 @@ html, body {
 
 #zone-list .zone-item button:hover {
   background: #00fff044;
+}
+
+/* 🗺️ Background Map Styles - FIXED */
+#background-map {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* instead of -1 */
+  background: #111; /* fallback background */
+}
+
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  background: #111; /* fallback in case tiles don't load */
+}
+
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+.military-tracker-icon {
+  transition: all 0.3s ease;
+}
+
+.leaflet-tooltip {
+  background: rgba(0, 0, 0, 0.8) !important;
+  border: 1px solid #ff0080 !important;
+  color: #ff0080 !important;
+  box-shadow: 0 0 10px #ff0080 !important;
+  font-family: 'Courier New', monospace;
+}
+
+.leaflet-tooltip::before {
+  border-right-color: #ff0080 !important;
+}
+
+/* Make sure the map tiles blend well with the ambient background */
+.leaflet-tile-container {
+  opacity: 1 !important; /* make sure tiles render fully */
+}
+
+/* Visual feedback animations */
+.zone-item.high {
+  border: 2px solid #ff0000;
+  background: rgba(255, 0, 0, 0.1);
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.3);
+  animation: pulse-red 2s infinite alternate;
+}
+
+.zone-item.medium {
+  border: 2px solid #ff9900;
+  background: rgba(255, 153, 0, 0.1);
+  box-shadow: 0 0 8px rgba(255, 153, 0, 0.3);
+  animation: pulse-orange 2s infinite alternate;
+}
+
+.zone-item.elevated {
+  border: 2px solid #ffff00;
+  background: rgba(255, 255, 0, 0.1);
+  box-shadow: 0 0 8px rgba(255, 255, 0, 0.3);
+  animation: pulse-yellow 2s infinite alternate;
+}
+
+@keyframes pulse-red {
+  0% { opacity: 1; box-shadow: 0 0 8px rgba(255, 0, 0, 0.3); }
+  100% { opacity: 0.7; box-shadow: 0 0 16px rgba(255, 0, 0, 0.5); }
+}
+
+@keyframes pulse-orange {
+  0% { opacity: 1; box-shadow: 0 0 8px rgba(255, 153, 0, 0.3); }
+  100% { opacity: 0.7; box-shadow: 0 0 16px rgba(255, 153, 0, 0.5); }
+}
+
+@keyframes pulse-yellow {
+  0% { opacity: 1; box-shadow: 0 0 8px rgba(255, 255, 0, 0.3); }
+  100% { opacity: 0.7; box-shadow: 0 0 16px rgba(255, 255, 0, 0.5); }
+}
+
+/* Button hover effects */
+.zone-item button:hover {
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+/* Mood indicator */
+.mood-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #00fff0;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Serene fox animation */
+.fox-serene {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
