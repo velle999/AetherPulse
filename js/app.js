@@ -208,60 +208,125 @@ function setFoxByMood(mood) {
 }
 
 function animateFox(mood) {
-  const foxParticles = document.getElementById('fox-particles');
-  if (!foxParticles) return;
-  
-  // Clear existing particles
-  foxParticles.innerHTML = '';
-  
-  // Create particles based on mood
-  const particleCount = mood === 'panic' ? 20 : mood === 'melancholy' ? 15 : mood === 'pensive' ? 10 : 5;
-  
+  const foxImage = document.getElementById('fox');
+  if (!foxImage) return;
+
+  // Create or reuse a particle container that's attached to the fox
+  let foxParticles = document.getElementById('fox-particles');
+  if (!foxParticles) {
+    foxParticles = document.createElement('div');
+    foxParticles.id = 'fox-particles';
+    foxParticles.style.position = 'absolute';
+    foxParticles.style.left = '0';
+    foxParticles.style.top = '0';
+    foxParticles.style.width = '100%';
+    foxParticles.style.height = '100%';
+    foxParticles.style.pointerEvents = 'none';
+    foxParticles.style.overflow = 'visible';
+
+    // Wrap fox image in a relative container so particles track with it
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'absolute';
+    wrapper.style.transform = foxImage.style.transform || 'translate(0,0)';
+    wrapper.style.transition = foxImage.style.transition || 'transform 2s linear';
+    wrapper.appendChild(foxImage.cloneNode(true)); // clone original fox
+    foxImage.replaceWith(wrapper);
+
+    wrapper.appendChild(foxParticles);
+    wrapper.id = 'fox-wrapper';
+    window.foxWrapper = wrapper;
+  } else {
+    foxParticles.innerHTML = ''; // clear old particles
+  }
+
+  // Decide particle count and color by mood
+  const particleCount =
+    mood === 'panic' ? 20 :
+    mood === 'melancholy' ? 15 :
+    mood === 'pensive' ? 10 : 5;
+
+  const color =
+    mood === 'panic' ? '#ff0000' :
+    mood === 'melancholy' ? '#666666' :
+    mood === 'pensive' ? '#ff9900' : '#00fff0';
+
   for (let i = 0; i < particleCount; i++) {
     const particle = document.createElement('div');
     particle.style.cssText = `
       position: absolute;
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: ${mood === 'panic' ? '#ff0000' : mood === 'melancholy' ? '#666666' : mood === 'pensive' ? '#ff9900' : '#00fff0'};
+      background: ${color};
       opacity: 0.7;
       animation: float ${3 + Math.random() * 4}s infinite linear;
       left: ${Math.random() * 100}%;
       top: ${Math.random() * 100}%;
       transform: translate(-50%, -50%);
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 5px ${color};
     `;
-    
-    // Add random animation properties
-    const delay = Math.random() * 2;
-    const duration = 3 + Math.random() * 4;
-    const ease = ['ease-in-out', 'ease-in', 'ease-out'][Math.floor(Math.random() * 3)];
-    
-    particle.style.animationDelay = `${delay}s`;
-    particle.style.animationDuration = `${duration}s`;
-    particle.style.animationTimingFunction = ease;
-    
-    // Add rotation for panic state
+
     if (mood === 'panic') {
-      particle.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg)`;
+      particle.style.transform += ` rotate(${Math.random() * 360}deg)`;
     }
-    
+
     foxParticles.appendChild(particle);
   }
-  
-  // Add CSS animations
-  const style = document.createElement('style');
-  style.id = 'fox-animations';
-  style.textContent = `
-    @keyframes float {
-      0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
-      50% { transform: translateY(-20px) rotate(180deg); opacity: 0.3; }
-      100% { transform: translateY(0) rotate(360deg); opacity: 0.7; }
-    }
-  `;
-  document.head.appendChild(style);
+
+  // Add CSS animations once
+  if (!document.getElementById('fox-animations')) {
+    const style = document.createElement('style');
+    style.id = 'fox-animations';
+    style.textContent = `
+      @keyframes float {
+        0% { transform: translateY(0) scale(1); opacity: 0.7; }
+        50% { transform: translateY(-15px) scale(1.2); opacity: 0.3; }
+        100% { transform: translateY(0) scale(1); opacity: 0.7; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
 }
+
+function startFoxRoaming() {
+  const fox = document.getElementById("fox");
+  if (!fox) return;
+
+  function roam() {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    // random target inside viewport with margin
+    const x = Math.random() * (vw - 120);
+    const y = Math.random() * (vh - 120);
+
+    // mood affects speed + wait time
+    const mood = window.currentMood || "serene";
+    let duration, wait;
+
+    switch (mood) {
+      case "panic": duration = 1.2; wait = 800; break;
+      case "melancholy": duration = 4.5; wait = 5000; break;
+      case "pensive": duration = 3; wait = 3000; break;
+      case "gloomy": duration = 5; wait = 6000; break;
+      default: duration = 3.5; wait = 4000; break; // serene/neutral
+    }
+
+    // apply speed
+    fox.style.transition = `transform ${duration}s linear`;
+    fox.style.transform = `translate(${x}px, ${y}px)`;
+
+    // queue next roam
+    setTimeout(roam, wait + duration * 1000);
+  }
+
+  roam();
+
+  // restart immediately when mood changes
+  window.addEventListener("moodChange", roam);
+}
+
+document.addEventListener("DOMContentLoaded", startFoxRoaming);
 
 // 🧭 Conflict Zone Panel
 function initializeZoneMonitor() {

@@ -8,6 +8,14 @@ html, body {
   color: #00fff0;
 }
 
+/* ✅ Heading reset to avoid browser warnings */
+h1 {
+  font-size: 2rem;         /* pick a size that fits your UI */
+  margin: 0.5em 0;         /* reset giant UA margins */
+  font-weight: bold;
+  text-align: center;
+}
+
 #aether-container {
   position: relative;
   width: 100vw;
@@ -50,32 +58,17 @@ html, body {
 /* Base fox style */
 #fox {
   width: 100px;
-  position: absolute;
-  bottom: 0;
+  position: fixed;
   left: 0;
-}
-
-#fox-accessory {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100px;
-  display: none;
+  top: 0;
+  z-index: 10;
+  transition: transform 3s linear; /* JS will override duration per mood */
 }
 
 /* Mood animations */
-.fox-happy {
-  animation: tail-wag 1s ease-in-out infinite;
-}
-
-.fox-panic {
-  animation: shake 0.3s ease-in-out infinite;
-}
-
-.fox-sleep {
-  opacity: 0.7;
-  transform: scale(0.95);
-}
+.fox-happy { animation: tail-wag 1s ease-in-out infinite; }
+.fox-panic { animation: shake 0.3s ease-in-out infinite; }
+.fox-sleep { opacity: 0.7; transform: scale(0.95); }
 
 @keyframes tail-wag {
   0%, 100% { transform: rotate(0deg); }
@@ -88,13 +81,14 @@ html, body {
   75% { transform: translateX(5px); }
 }
 
-/* Container for particles */
+/* Particle container that moves with the fox */
 #fox-particles {
   position: absolute;
-  bottom: 40px;
-  left: 40px;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   pointer-events: none;
   z-index: 9;
+  overflow: visible;
 }
 
 /* Particle burst style */

@@ -5,8 +5,9 @@ async function fetchConflictData() {
     const res = await fetch("https://velle999.github.io/conflict-dashboard/api/zones.json");
     const data = await res.json();
 
-    applyConflictMood(data);        // existing mood logic
-    updateZoneMonitor(data);        // <-- THIS IS THE MISSING PIECE
+    applyConflictMood(data);   // mood + background
+    updateZoneMonitor(data);   // UI panel update
+    plotConflictZonesOnMap(data); // map markers (if map is live)
 
   } catch (err) {
     console.warn("⚠️ Failed to fetch conflict data:", err);
@@ -14,44 +15,71 @@ async function fetchConflictData() {
 }
 
 function applyConflictMood(zones) {
-  let globalRisk = 0;
+  let totalRisk = 0;
 
   zones.forEach(zone => {
-    if (zone.risk === "High") globalRisk += 3;
-    else if (zone.risk === "Medium") globalRisk += 2;
-    else if (zone.risk === "Elevated") globalRisk += 1;
+    switch (zone.risk) {
+      case "Severe": totalRisk += 4; break;
+      case "High": totalRisk += 3; break;
+      case "Medium": totalRisk += 2; break;
+      case "Elevated": totalRisk += 1; break;
+    }
   });
 
-  // Normalize
-  const riskScore = Math.min(globalRisk / zones.length, 1);
+  const avgRisk = zones.length ? totalRisk / zones.length : 0;
 
-  // Mood reaction
-  if (riskScore > 0.6) {
-    document.getElementById("mood-description").textContent = "⚠️ Escalating Tensions Detected";
+  // Mood reaction logic tied to intel severity
+  if (avgRisk >= 3) {
+    document.getElementById("mood-description").textContent = "🚨 Severe Escalation Ongoing";
     document.body.style.background = "radial-gradient(#3a0000, #000)";
-    document.getElementById("fox").classList.add("fox-panic");
+    document.getElementById("fox")?.classList.add("fox-panic");
     playConflictSoundscape();
-  } else if (riskScore > 0.3) {
-    document.getElementById("mood-description").textContent = "🌍 Watching World Events...";
+  } else if (avgRisk >= 2) {
+    document.getElementById("mood-description").textContent = "⚠️ Escalating Tensions Detected";
     document.body.style.background = "radial-gradient(#202020, #000)";
-    document.getElementById("fox").classList.remove("fox-panic");
+    document.getElementById("fox")?.classList.remove("fox-panic");
+  } else if (avgRisk >= 1) {
+    document.getElementById("mood-description").textContent = "🌍 Watching World Events...";
+    document.body.style.background = "radial-gradient(#111, #000)";
+    document.getElementById("fox")?.classList.remove("fox-panic");
+  } else {
+    document.getElementById("mood-description").textContent = "✅ Calm — No major escalations";
+    document.body.style.background = "radial-gradient(#000, #000)";
+    document.getElementById("fox")?.classList.remove("fox-panic");
   }
 
-  // Optional: visual pulses on canvas
+  // Optional: visual overlays
   if (typeof renderConflictOverlay === "function") {
     renderConflictOverlay(zones);
   }
 }
 
-function playConflictSoundscape() {
+// 🎧 Resilient audio loader for conflict-swell.mp3
+async function playConflictSoundscape() {
   const bg = document.getElementById("bg-music");
   if (bg) bg.volume = 0.2;
 
-  const conflictSound = new Audio("assets/conflict-swell.mp3");
+  const primaryUrl = `${window.location.origin}/AetherPulse/assets/conflict-swell.mp3`;
+  const fallbackUrl = "https://raw.githubusercontent.com/velle999/AetherPulse/main/assets/conflict-swell.mp3";
+
+  let soundUrl = primaryUrl;
+
+  try {
+    // Try to confirm Pages asset exists
+    const res = await fetch(primaryUrl, { method: "HEAD" });
+    if (!res.ok) soundUrl = fallbackUrl;
+  } catch (err) {
+    console.warn("⚠️ Conflict-swell not found on Pages, using fallback:", err);
+    soundUrl = fallbackUrl;
+  }
+
+  const conflictSound = new Audio(soundUrl);
   conflictSound.volume = 0.6;
-  conflictSound.play().catch(e => {});
+  conflictSound.play().catch(err => {
+    console.warn("⚠️ Could not auto-play conflict soundscape:", err);
+  });
 }
 
-// Call on interval
-setInterval(fetchConflictData, 15000); // Refresh every 15s
+// Refresh every 15s
+setInterval(fetchConflictData, 15000);
 fetchConflictData();
