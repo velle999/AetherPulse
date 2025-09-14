@@ -8,13 +8,17 @@ html, body {
   color: #00fff0;
 }
 
-/* ✅ Heading reset to avoid browser warnings */
-h1 {
-  font-size: 2rem;         /* pick a size that fits your UI */
-  margin: 0.5em 0;         /* reset giant UA margins */
+/* ✅ Heading reset to silence UA warnings */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  margin: 0.5em 0;
   font-weight: bold;
   text-align: center;
 }
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.2rem; }
 
 #aether-container {
   position: relative;

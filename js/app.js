@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeInit("initializeZoneMonitor");
   safeInit("initializeMilitaryTracker");
   safeInit("initializeBackgroundMap");
-  safeInit("initializeCompanion");
+  
 });
 
 function safeInit(fnName) {
@@ -355,12 +355,13 @@ function initializeZoneMonitor() {
     borderRadius: '8px',
     boxShadow: '0 0 10px #00fff0',
     transition: 'opacity 0.5s ease, transform 0.5s ease, background 1s ease',
-    opacity: '1',
-    transform: 'translateY(0)',
+    // Changed these lines to start closed:
+    opacity: '0',
+    transform: 'translateY(20px)',
     fontFamily: 'Courier New, monospace',
     display: 'block'
   });
-
+  
   // 🌈 Sync conflict panel color to current mood
   window.setMoodGradient = (function (original) {
     return function(mood) {
@@ -378,6 +379,7 @@ function initializeZoneMonitor() {
       panel.style.boxShadow = `0 0 10px ${moodMap[mood] || '#00fff0'}`;
     };
   })(window.setMoodGradient);
+
   panel.innerHTML = '<h2>🛰️ Conflict Zones</h2><div id="zone-list">Loading...</div>';
   document.body.appendChild(panel);
 
@@ -426,14 +428,17 @@ function initializeMilitaryTracker() {
     borderRadius: '8px',
     boxShadow: '0 0 10px #ff0080',
     transition: 'opacity 0.5s ease, transform 0.5s ease',
+    // These lines ensure the panel starts closed
     opacity: '0',
     transform: 'translateY(20px)',
     fontFamily: 'Courier New, monospace',
     display: 'block'
   });
 
-  panel.innerHTML = '<h2>✈️ Military Flights</h2><div id="flight-list">Click to load military flights...</div>';
+  panel.innerHTML = '<h2>✈️ Military Flights</h2><div id="flight-list">Initializing military flight tracking...</div>';
   document.body.appendChild(panel);
+
+  startMilitaryTracking();
 
   // Sync with mood system
   window.setMoodGradient = (function (original) {
@@ -1267,12 +1272,10 @@ function updateZoneMonitor(zones) {
   window.activeConflictZones = zones;
   const list = document.getElementById('zone-list');
   if (!list) return;
-
   if (!zones.length) {
     list.innerHTML = '<p>No active conflicts.</p>';
     return;
   }
-
   list.innerHTML = zones.map(zone => `
     <div class="zone-item ${zone.risk.toLowerCase()}">
       <strong>${zone.name}</strong><br/>
@@ -1282,8 +1285,8 @@ function updateZoneMonitor(zones) {
       <button onclick="muteZone('${zone.name}')">🙊 Mute</button>
       <button onclick="focusZone('${zone.name}')">🎯 Focus</button>
     </div>`).join('');
-
-  // 🔁 Sync mood based on conflict risk
+  
+  // 🔁 Sync mood based on conflict risk (but don't auto-show panel)
   let totalRisk = 0;
   zones.forEach(zone => {
     switch (zone.risk) {
@@ -1293,10 +1296,11 @@ function updateZoneMonitor(zones) {
       default: break;
     }
   });
-
   const avgRisk = zones.length ? totalRisk / zones.length : 0;
   window.globalConflictRisk = avgRisk;
-
+  
+  // ❌ REMOVE OR COMMENT OUT THIS ENTIRE SECTION:
+  /*
   const panel = document.getElementById('zone-monitor');
   if (panel) {
     if (avgRisk > 0.5) {
@@ -1307,7 +1311,9 @@ function updateZoneMonitor(zones) {
       panel.style.transform = 'translateY(20px)';
     }
   }
-
+  */
+  
+  // ✅ KEEP THIS PART - it updates the mood based on risk:
   if (avgRisk > 2.5) {
     triggerMoodEffects("panic");
   } else if (avgRisk > 1.5) {
